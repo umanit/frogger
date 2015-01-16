@@ -95,6 +95,9 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        allGems.forEach(function(gem) {
+            gem.update();
+        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -151,6 +154,10 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
+        allGems.forEach(function(gem) {
+            gem.render();
+        });
+
         player.render();
     }
 
@@ -166,12 +173,20 @@ var Engine = (function(global) {
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
      */
+     console.log("checking resources");
     Resources.load([
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-cat-girl.png'
+        'images/char-cat-girl.png',
+        'images/Gem-Blue.png',
+        'images/Gem-Green.png',
+        'images/Gem-Orange.png',
+        'images/Heart.png',
+        'images/Key.png',
+        'images/Rock.png',
+        'images/Star.png'
     ]);
     Resources.onReady(init);
 
