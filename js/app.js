@@ -21,6 +21,7 @@ var div = document.getElementById('score-board');
 var player;
 var assets = []; // keeps track of the player's attributes (heart, rock, key)
 var score = 0;
+var audio = new Audio;
 
 /*
  * Helper methods 
@@ -41,14 +42,20 @@ Helper.overlap = function(fig1, fig2){
             fig2.y + (fig2.height - yoffset) < (fig1.y) ||  //fig2 is above fig1
             fig2.y  > (fig1.y + (fig1.height - yoffset)))   //fig2 is below fig1
 }
-Helper.showDied = function(){
-    score = 0;
-    div.innerHTML = "You Died! Score: " + score;
-}
 // Updates score. Takes in a string of which event has occured as a parameter.
 Helper.updateScore = function(event){
+    if(event == "died") {
+        score = 0;
+        div.innerHTML = "You Died! Score: " + score;
+        div.style.backgroundColor = "#E1077F";
+        div.style.color = "#ADFF17";
+        audio.src = 'die.wav';
+        audio.play();
+    }
     if(event == "water" ||  event == "green-gem"){
         score += 10;
+        audio.src = 'smw_swimming.wav';
+        audio.play();
     }
     if(event == "blue-gem"){
         score += 20;
@@ -59,17 +66,41 @@ Helper.updateScore = function(event){
     if(event == "star"){
         score += 100;
     }
+    if(score >= 100){
+        div.style.backgroundColor = "#FDB93A";
+        div.style.color = "#E1077F";
+
+    }
+    if(score == 100 || score == 200){
+        audio.src = 'smw_1-up.wav';
+        audio.play();
+    }
+    if(score >= 200){
+        div.innerHTML = "OMG! Score: " + score;
+        div.style.backgroundColor = "#E8FB2D";
+        div.style.color = "#0AAEFF";
+    } 
     div.innerHTML = "Yay! Score: " + score;
+    
 }
 
 // Enemies our player must avoid
 var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = 0;
-    this.y = Helper.returnRandomInt([60, 145, 230]);  // randomly assign either 60, 150 or 240
+    if(score >= 100){
+        this.y = Helper.returnRandomInt([60, 145, 230, 315]);
+    } else {
+        this.y = Helper.returnRandomInt([60, 145, 230]);
+    }
     this.width = 171;
     this.height = 101;
-    this.speed = Helper.returnRandomInt([200, 250, 300, 350, 400]);
+    if(score >= 200){
+        this.speed = Helper.returnRandomInt([250, 300, 350, 400, 500]); 
+    } else {
+        this.speed = Helper.returnRandomInt([200, 250, 300, 350, 400]);
+    }
+    
 }
 
 // Update the enemy's position
@@ -80,7 +111,7 @@ Enemy.prototype.update = function(dt) {
     // Checks for collision between enemy and player. If any enemy touches with the player, the player is returned to the bottom of the screen.
     allEnemies.forEach(function(enemy, index) {
         if(Helper.overlap(enemy, player)){
-            Helper.showDied();
+            Helper.updateScore("died");
             player.y = 380;
         }
     });
@@ -96,7 +127,12 @@ Enemy.prototype.render = function() {
 Enemy.generateEnemies = function() {
     allEnemies.push(new Enemy());
     Enemy.removeOffScreenEnemies();
-    var delay = Helper.returnRandomInt([0, 500, 1000]);
+    var delay;
+    if(score >= 200){
+        delay = Helper.returnRandomInt([0, 200, 500]);
+     } else {
+        delay = Helper.returnRandomInt([0, 500, 1000]);
+     }
     setTimeout(Enemy.generateEnemies, delay);
 }
 
@@ -137,11 +173,13 @@ Player.prototype.handleInput = function(keyCode) {
         } else {
             this.x -= 101; // If it's on the grid, move left by 100
         }  
-    } else if(keyCode == 'up'){
-         if(this.y - 83 < 0){  // Player reached water
-            this.y = 0;
-            Helper.updateScore("water"); 
-        } else {
+    } else if(keyCode == 'up'){ // water ranges from y=0 to y=81
+        if(this.y - 83 < 0){ //prevents pressing up key at top of game from incrementing score
+            
+            Helper.updateScore("water");  
+            this.y =  380;   
+        }
+         else {
             this.y -= 83; 
         }  
     } else if(keyCode == 'right'){ 
