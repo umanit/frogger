@@ -42,6 +42,69 @@ Helper.overlap = function(fig1, player){
             player.y + (player.height - fig1.yoffset) < (fig1.y) ||  //player is above fig1
             player.y  > (fig1.y + (fig1.height - fig1.yoffset)))   //player is below fig1
 }
+/*
+* Function takes two game elements and returns true if they are in the same block in the paved stones area of the game.
+*/ 
+Helper.sameBlock = function(fig1, player){
+    var fig1Row = Helper.getRow(fig1);
+    var fig1Col = Helper.getCol(fig1);
+    var playerRow = Helper.getRow(player);
+    var playerCol = Helper.getCol(player);
+
+    console.log(playerRow);
+    console.log(playerCol);
+    if(fig1Row == playerRow && fig1Col == playerCol){
+        return true;
+    }
+}
+
+/*
+* Function calculates row number of element. Takes in element (object) as parameter and returns int of the row number. 
+*/ 
+Helper.getRow = function(element){
+    var row;
+    if((element.y + element.height/2) <= 85){
+        row = 0;
+    }
+    if((element.y + element.height/2) > 85 && (element.y + element.height/2) <= 170){
+        row = 1;
+    }
+    if((element.y + element.height/2) > 170 && (element.y + element.height/2) <= 255){
+        row = 2;
+    }
+    if((element.y + element.height/2) > 255 && (element.y + element.height/2) <= 340){
+        row = 3;
+    }
+    if((element.y + element.height/2) > 340 && (element.y + element.height/2) <= 425){
+        row = 4;
+    }
+    if((element.y + element.height/2) > 425){
+        row = 5;
+    }
+    return row;
+}
+
+Helper.getCol = function(element) {
+    console.log("x = " + element.x);
+    var col;
+    if(element.x < 100){
+        col = 0;
+    }
+    if(element.x >= 100 && element.x < 200){
+        col = 1;
+    } 
+    if(element.x >= 200 && element.x < 300){
+        col = 2;
+    }
+    if(element.x >= 300 && element.x < 400){
+        col = 3;
+    }
+    if(element.x >= 400){
+        col = 4;
+    }
+    return col;
+}
+
 // Updates score. Takes in a string of which event has occured as a parameter.
 Helper.updateScore = function(event){
     if(event == "died") {
@@ -99,24 +162,18 @@ var Gem = function() {
     this.x = Helper.returnRandomValue([126, 227, 328]);
     this.y = Helper.returnRandomValue([115, 200, 275]);
     this.width = 50;
-    this.height = 85;
-    this.yoffset = 65;
-    this.xoffset = 0;
-    console.log("gem y is: " + (this.y + this.yoffset));
-    
+    this.height = 85;   
 }
-
-// gem: 115 
-// player: 131  
 
 // // Draw the Gem on the screen
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.gemImage), this.x, this.y);
+
 }
 
 Gem.prototype.update = function() {
     allGems.forEach(function(gem, index) {
-        if(Helper.overlap(gem, player)){
+        if(Helper.sameBlock(gem, player)){
             Helper.updateScore("blue-gem");
             Gem.expireGem(gem);
             audio.src = 'smw_power-up.wav';
@@ -131,13 +188,12 @@ Gem.generateGem = function() {
     allGems.push(newGem);
     audio.src = 'smw_power-up_appears.wav';
     audio.play();
-    var delay = Helper.returnRandomValue([10000]); //10000, 30000, 60000, 100000
+    var delay = Helper.returnRandomValue([10000, 30000, 60000, 100000]); //
     setTimeout(function() { Gem.expireGem(newGem); }, 10000);
     setTimeout(Gem.generateGem, delay);
 }
 
 Gem.expireGem = function(expriringGem){
-    console.log("expriring");
     allGems.forEach(function(gem, index) {
         if(expriringGem == gem ){
             allGems.splice(index, 1);
@@ -157,9 +213,9 @@ var Enemy = function() {
     this.width = 171;
     this.height = 101;
     if(score >= 200){
-        this.speed = Helper.returnRandomValue([10]); //250, 300, 350, 400, 500
+        this.speed = Helper.returnRandomValue([250, 300, 350, 400, 500]); //
     } else {
-        this.speed = Helper.returnRandomValue([10]);//200, 250, 280, 300, 320, 350, 400
+        this.speed = Helper.returnRandomValue([200, 250, 280, 300, 320, 350, 400]);//
     }
     this.yoffset = 50;
     this.xoffset = 100;
@@ -184,6 +240,7 @@ Enemy.prototype.update = function(dt) {
 // Draw the enemy on the screen
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); 
+
 }
 
 // Static methods for instantiating enemy objects
@@ -192,9 +249,9 @@ Enemy.generateEnemies = function() {
     Enemy.removeOffScreenEnemies();
     var delay;
     if(score >= 200){
-        delay = Helper.returnRandomValue([75000000]); //0, 200, 500, 750
+        delay = Helper.returnRandomValue([0, 200, 500, 750]); //
      } else {
-        delay = Helper.returnRandomValue([10000000]); //0, 500, 750, 1000
+        delay = Helper.returnRandomValue([0, 500, 750, 1000]); //
      }
     setTimeout(Enemy.generateEnemies, delay);
 }
@@ -235,42 +292,42 @@ Player.prototype.handleInput = function(keyCode) {
             this.x = 0;
             
         } else {
-            this.x -= 101; // If it's on the grid, move left by 100
+            this.x -= 100; // If it's on the grid, move left by 100
         }  
     } else if(keyCode == 'up'){ // water ranges from y=0 to y=81
 
-        if(this.y - 83 < 0){ //prevents pressing up key at top of game from incrementing score
+        if(this.y - 85 < 0){ //prevents pressing up key at top of game from incrementing score
             
             Helper.updateScore("water");  
             this.y =  380;   
         }
          else {
-            this.y -= 83; 
+            this.y -= 85; 
         } 
-        console.log("Player y is: " + this.y); 
     } else if(keyCode == 'right'){ 
          if(this.x + 101 > 400){  //Player's maximum rightward position
                 this.x = 400; 
             } else {
-                this.x += 101; 
+                this.x += 100; 
             }
         } else if(keyCode == 'down') { 
-            if(this.y + 83 > 380) {  //Players maximum distance from the top of the canvas
+            if(this.y + 85 > 380) {  //Players maximum distance from the top of the canvas
                 this.y = 380; 
             } else {
-                this.y += 83; 
+                this.y += 85; 
             } 
         
     }
 }
 
 // Instantiate Objects
-//Enemy.generateEnemies();
+Enemy.generateEnemies();
 player = new Player();
 
 
 // Randomly generate a gem
 Gem.generateGem();
+
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method.
