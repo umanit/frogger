@@ -2,10 +2,25 @@
  * Globals 
  */
 
+// Scoreboard: Each successful water mission gets 10 points. If you collide with an enemy you lose all your points 
+ // Heart: get another life. Can handle one collision without going back or losing points 
+ // Key: 
+
+ // green gem: get 10 points 
+ // blue gem: get 20 points 
+ // orange gem: get 50 points 
+ // star: 100 points (rare)
+
+ // Key: Key of life. You are now immortal! 
+ // Rock: you trip and fall. You can't move for a delay of 1000
+
+
 // All enemy objects are stored in an array, allEnemies
 var allEnemies = [];
-
+var div = document.getElementById('score-board');
 var player;
+var assets = []; // keeps track of the player's attributes (heart, rock, key)
+var score = 0;
 
 /*
  * Helper methods 
@@ -19,12 +34,32 @@ Helper.returnRandomInt = function(possibleInts){
 }
 // Function checks whether two figures on the canvas overlap. Takes in two figures as parameters and returns a boolean.
 Helper.overlap = function(fig1, fig2){
-    var yoffset = 40;
+    var yoffset = 50;
     var xoffset = 100;
     return !( fig2.x + xoffset > (fig1.x + fig1.width)  ||  // fig2 is to the right of figure 1
             (fig2.x + fig2.width - xoffset) < fig1.x    ||  // fig2 is to the left of fig 1
             fig2.y + (fig2.height - yoffset) < (fig1.y) ||  //fig2 is above fig1
             fig2.y  > (fig1.y + (fig1.height - yoffset)))   //fig2 is below fig1
+}
+Helper.showDied = function(){
+    score = 0;
+    div.innerHTML = "You Died! Score: " + score;
+}
+// Updates score. Takes in a string of which event has occured as a parameter.
+Helper.updateScore = function(event){
+    if(event == "water" ||  event == "green-gem"){
+        score += 10;
+    }
+    if(event == "blue-gem"){
+        score += 20;
+    }
+    if(event == "orange-gem"){
+        score += 50;
+    }
+    if(event == "star"){
+        score += 100;
+    }
+    div.innerHTML = "Yay! Score: " + score;
 }
 
 // Enemies our player must avoid
@@ -45,6 +80,7 @@ Enemy.prototype.update = function(dt) {
     // Checks for collision between enemy and player. If any enemy touches with the player, the player is returned to the bottom of the screen.
     allEnemies.forEach(function(enemy, index) {
         if(Helper.overlap(enemy, player)){
+            Helper.showDied();
             player.y = 380;
         }
     });
@@ -76,7 +112,7 @@ Enemy.removeOffScreenEnemies = function() {
 
 // Player Class
 var Player = function(){
-    // Ultimtately this image will be selected by the user 
+    // TODO: allow user to select image 
     this.playerIcon = 'images/char-cat-girl.png';
     this.x = Helper.returnRandomInt([0, 100, 200, 300, 400]);
     this.y = 380;
@@ -84,25 +120,27 @@ var Player = function(){
     this.height = 101;
 }
 
-
-Player.prototype.update = function() {
-
+Player.prototype.update = function(dt) {
 }
 
 Player.prototype.render = function() {
    ctx.drawImage(Resources.get(this.playerIcon), this.x, this.y);
 }
 
+
+
 Player.prototype.handleInput = function(keyCode) {
     if(keyCode === 'left'){
-        if(this.x - 101 < 0){ // Check new position is on grid
-            this.x = 0; // If it's off the grid, move to x = 0
+        if(this.x - 101 < 0){ 
+            this.x = 0;
+            
         } else {
             this.x -= 101; // If it's on the grid, move left by 100
         }  
     } else if(keyCode == 'up'){
-         if(this.y - 83 < 0){ 
-            this.y = 0; 
+         if(this.y - 83 < 0){  // Player reached water
+            this.y = 0;
+            Helper.updateScore("water"); 
         } else {
             this.y -= 83; 
         }  

@@ -1,3 +1,25 @@
 body {
     text-align: center;
+    margin: 0;
 }
+
+#container {
+	display: table; 
+	height: 100px;
+	width: 100%; 
+	overflow: hidden;
+}
+
+#score-board {
+	display: table-cell; 
+	vertical-align: middle;
+	background-color: #E1077F;
+	color: #ADFF17;
+	font-family: "Visitor";
+	font-size: 4em;
+}
+
+@font-face {
+      font-family: "Visitor";
+      src: url("../fonts/visitor1.ttf");
+    }
