@@ -17,6 +17,7 @@
 
 // All enemy objects are stored in an array, allEnemies
 var allEnemies = [];
+var possibleGems = ['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png'];
 var div = document.getElementById('score-board');
 var player;
 var gem;
@@ -105,8 +106,23 @@ Helper.getCol = function(element) {
     return col;
 }
 
+Helper.getGemScore = function(gemImageString){
+    var gemScores = {
+        "images/Gem-Green.png": 20,
+        "images/Gem-Blue.png": 30,
+        "images/Gem-Orange.png": 50
+        }
+    return gemScores[gemImageString];
+}
+
 // Updates score. Takes in a string of which event has occured as a parameter.
 Helper.updateScore = function(event){
+    if(possibleGems.indexOf(event) > -1){ // if the event string is found in the array of possible gems
+        score += Helper.getGemScore(event);
+        div.innerHTML = "Gem! Score: " + score;
+        audio.src = 'smw_power-up.wav';
+        audio.play();
+    }
     if(event == "died") {
         score = 0;
         div.innerHTML = "You Died! Score: " + score;
@@ -115,25 +131,11 @@ Helper.updateScore = function(event){
         audio.src = 'Meh.m4a';
         audio.play();
     }
-    if(event == "water" ||  event == "green-gem"){
+    if(event == "water"){
         score += 10;
         div.innerHTML = "Yay! Score: " + score;
         audio.src = 'smw_swimming.wav';
         audio.play();
-    }
-    if(event == "blue-gem"){
-        score += 20;
-        div.innerHTML = "Gem! Score: " + score;
-        
-    }
-    if(event == "orange-gem"){
-        score += 50;
-        div.innerHTML = "Gem! Score: " + score;
-        
-    }
-    if(event == "star"){
-        score += 100;
-        div.innerHTML = "Star Gem! Score: " + score;
     }
     if(score >= 100){
         div.innerHTML = "Wow! Score: " + score;
@@ -158,7 +160,7 @@ Helper.updateScore = function(event){
 
 // Constructor creates a gem object. Takes in a string of the gem type, e.g. "green-gem"
 var Gem = function() {
-    this.gemImage = Helper.returnRandomValue(['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png', 'images/Star.png',  "images/Key.png","images/Rock.png" ]);
+    this.gemImage = Helper.returnRandomValue(possibleGems);
     this.x = Helper.returnRandomValue([126, 227, 328]);
     this.y = Helper.returnRandomValue([115, 200, 275]);
     this.width = 50;
@@ -174,10 +176,8 @@ Gem.prototype.render = function() {
 Gem.prototype.update = function() {
     allGems.forEach(function(gem, index) {
         if(Helper.sameBlock(gem, player)){
-            Helper.updateScore("blue-gem");
+            Helper.updateScore(gem.gemImage);
             Gem.expireGem(gem);
-            audio.src = 'smw_power-up.wav';
-            audio.play();
         }
     });
 }
