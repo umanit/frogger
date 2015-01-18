@@ -20,6 +20,8 @@ var allEnemies = [];
 var possibleGems = ['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png'];
 var div = document.getElementById('score-board');
 var player;
+var highestScore = 0;
+var newHighScore;
 var gem;
 var assets = []; // keeps track of the player's attributes (heart, rock, key)
 var allGems = [];
@@ -124,8 +126,13 @@ Helper.updateScore = function(event){
         audio.play();
     }
     if(event == "died") {
+        if(newHighScore){
+            alert("New high score! " + highestScore);
+        }
+        newHighScore = false;
         score = 0;
         div.innerHTML = "You Died! Score: " + score;
+
         div.style.backgroundColor = "#E1077F";
         div.style.color = "#ADFF17";
         audio.src = 'Meh.m4a';
@@ -154,8 +161,10 @@ Helper.updateScore = function(event){
         div.style.backgroundColor = "#E8FB2D";
         div.style.color = "#0AAEFF";
     } 
-    //div.innerHTML = "Yay! Score: " + score;
-    
+    if(score > highestScore){
+        highestScore = score;
+        newHighScore = true;
+    }   
 }
 
 // Constructor creates a gem object. Takes in a string of the gem type, e.g. "green-gem"
