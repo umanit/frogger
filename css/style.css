@@ -1,6 +1,8 @@
 body {
     text-align: center;
     margin: 0;
+    font-family: "Visitor";
+	font-size: 4em;
 }
 
 #container {
@@ -15,8 +17,17 @@ body {
 	vertical-align: middle;
 	background-color: #E1077F;
 	color: #ADFF17;
-	font-family: "Visitor";
-	font-size: 4em;
+}
+
+#high-score {
+	display: none;
+	width: 200px;
+	border: 2px solid #E1077F;
+	position: absolute;
+	font-size: 0.75em;
+	background-color: #E1077F;
+	color: #ADFF17;
+
 }
 
 @font-face {

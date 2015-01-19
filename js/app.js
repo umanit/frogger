@@ -117,6 +117,17 @@ Helper.getGemScore = function(gemImageString){
     return gemScores[gemImageString];
 }
 
+Helper.showHighScore = function(){
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var div = document.getElementById('high-score');
+    div.style.right = (((w - 505)/2) - 200 )/2 + "px";
+    div.style.top = (h - 200)/2 + "px";
+    div.style.display = "block";
+    div.innerHTML = "Highest Score! " + highestScore;
+
+}   
+
 // Updates score. Takes in a string of which event has occured as a parameter.
 Helper.updateScore = function(event){
     if(possibleGems.indexOf(event) > -1){ // if the event string is found in the array of possible gems
@@ -127,7 +138,7 @@ Helper.updateScore = function(event){
     }
     if(event == "died") {
         if(newHighScore){
-            alert("New high score! " + highestScore);
+            Helper.showHighScore();
         }
         newHighScore = false;
         score = 0;
