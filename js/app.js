@@ -2,56 +2,60 @@
  * Globals 
  */
 
-// Scoreboard: Each successful water mission gets 10 points. If you collide with an enemy you lose all your points 
- // Heart: get another life. Can handle one collision without going back or losing points 
- // Key: 
-
- // green gem: get 10 points 
- // blue gem: get 20 points 
- // orange gem: get 50 points 
- // star: 100 points (rare)
-
- // Key: Key of life. You are now immortal! 
- // Rock: you trip and fall. You can't move for a delay of 1000
-
-
-// All enemy objects are stored in an array, allEnemies
-var allEnemies = [];
-var possibleGems = ['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png'];
-var div = document.getElementById('score-board');
+var allEnemies = []; // stores all enemy objects
 var player;
-var highestScore = 0;
-var newHighScore;
 var gem;
-var assets = []; // keeps track of the player's attributes (heart, rock, key)
-var allGems = [];
+var allGems = []; // stores all gem objects 
+var possibleGems = ['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png'];
+var highestScore = 0;
+var newHighScore; // true when a new high score is reached.
 var score = 0;
+var div = document.getElementById('score-board');
 var audio = new Audio;
+
+
+/*
+ * Opens the instructions modal on page load. Modal itself uses only css3/html5
+ */
+window.onload = function() {
+    window.location.href = "#openModal";
+}
 
 /*
  * Helper methods 
  */
 
-window.onload = function() {
-    window.location.href = "#openModal";
-}
-
+/*
+ * The Helper class. Contains methods used for general actions throughout the game
+ * that are not specific to any one object.
+ */
 var Helper = function(){}
-// Function returns a random value. It takes an array of possible values as a parameter.
+
+/*
+ * Function returns a random value. It takes an array of possible values as a parameter.
+ */ 
 Helper.returnRandomValue = function(possibleValues){
     var randomStartingPosition = Math.floor(Math.random() * possibleValues.length);
     return possibleValues[randomStartingPosition];
 }
-// Function checks whether two figures on the canvas overlap. Takes in two figures as parameters and returns a boolean.
+/*
+ * Function checks whether two elements on the canvas overlap or touch.
+ * Takes in two figures as parameters and returns a boolean. The word player
+ * is used for clarity only; any figures can be parameters.
+ */
 Helper.overlap = function(fig1, player){
     return !( player.x + fig1.xoffset > (fig1.x + fig1.width)  ||  // player is to the right of figure 1
             (player.x + player.width - fig1.xoffset) < fig1.x    ||  // player is to the left of fig 1
             player.y + (player.height - fig1.yoffset) < (fig1.y) ||  //player is above fig1
             player.y  > (fig1.y + (fig1.height - fig1.yoffset)))   //player is below fig1
 }
+
 /*
-* Function takes two game elements and returns true if they are in the same block in the paved stones area of the game.
-*/ 
+ * Function takes two game elements and returns 
+ * true if they are in the same block. Used for gem collisions, 
+ * since an exact overlap is not required. The player 
+ * just needs to be on the same block as the gem.
+ */ 
 Helper.sameBlock = function(fig1, player){
     var fig1Row = Helper.getRow(fig1);
     var fig1Col = Helper.getCol(fig1);
@@ -66,7 +70,8 @@ Helper.sameBlock = function(fig1, player){
 }
 
 /*
-* Function calculates row number of element. Takes in element (object) as parameter and returns int of the row number. 
+* Function calculates row number of element. Takes in 
+* element (object) as parameter and returns an int, row number. 
 */ 
 Helper.getRow = function(element){
     var row;
@@ -91,6 +96,10 @@ Helper.getRow = function(element){
     return row;
 }
 
+/*
+ * Function calculates column number of element. Takes in 
+ * element (object) as parameter and returns int, col number. 
+ */
 Helper.getCol = function(element) {
     console.log("x = " + element.x);
     var col;
@@ -112,6 +121,11 @@ Helper.getCol = function(element) {
     return col;
 }
 
+/*
+ * Helper function returns an int, the number of points each gem is worth. 
+ * It takes a string which is the path for that gem's image and maps images to scores on a 
+ * gemScores object.
+ */
 Helper.getGemScore = function(gemImageString){
     var gemScores = {
         "images/Gem-Green.png": 20,
@@ -121,6 +135,9 @@ Helper.getGemScore = function(gemImageString){
     return gemScores[gemImageString];
 }
 
+/*
+ * Helper function displays a scoreboard with the player;s highest score so far.
+ */
 Helper.showHighScore = function(){
     var w = window.innerWidth;
     var h = window.innerHeight;
@@ -128,12 +145,16 @@ Helper.showHighScore = function(){
     div.style.right = (((w - 505)/2) - 200 )/2 + "px";
     div.style.top = (h - 200)/2 + "px";
     div.style.display = "block";
-    var URL = encodeURIComponent("http://localhost:8888/Hipster-Quiz2.0/");
+    var URL = encodeURIComponent("http://www.katielouw.com/sites/Frogger");
     var text = encodeURIComponent("I scored " + highestScore + " on Frogger!")
     div.innerHTML = "High Score: " + highestScore + '<a class="twitter-share-button" id="tweet-score" target="_blank" href="https://twitter.com/share?url='+ URL +'&text='+ text +'">Tweet Your Score</a>';
 }   
 
-// Updates score. Takes in a string of which event has occured as a parameter.
+/*
+ * Function updates score. Takes in a string of which event has 
+ * occured as a parameter. In the case of gems, the event is that path for that
+ * gem's image. The gemScores object (above) maps images to scores.
+ */
 Helper.updateScore = function(event){
     if(possibleGems.indexOf(event) > -1){ // if the event string is found in the array of possible gems
         score += Helper.getGemScore(event);
@@ -183,7 +204,10 @@ Helper.updateScore = function(event){
     }   
 }
 
-// Constructor creates a gem object. Takes in a string of the gem type, e.g. "green-gem"
+/*
+ * Constructor creates a gem object. 
+ * Takes in an array (global variable) of the possible gem types it can generate.
+ */
 var Gem = function() {
     this.gemImage = Helper.returnRandomValue(possibleGems);
     this.x = Helper.returnRandomValue([126, 227, 328]);
@@ -192,12 +216,18 @@ var Gem = function() {
     this.height = 85;   
 }
 
-// // Draw the Gem on the screen
+/*
+ * Draws gem on the screen 
+ */
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.gemImage), this.x, this.y);
 
 }
 
+/*
+ * Checks if the player has collided with a gem. When this happens, the score
+ * is updated by the gem's value and the gem expires. 
+ */
 Gem.prototype.update = function() {
     allGems.forEach(function(gem, index) {
         if(Helper.sameBlock(gem, player)){
@@ -207,7 +237,12 @@ Gem.prototype.update = function() {
     });
 }
 
-// A static methos to generate gems.
+
+/*
+ * A static methosdto generate gems at random time values 
+ * (from an array of possibilities). Gems are stored in an array for a small amount of time,
+ * and then they expire.
+ */
 Gem.generateGem = function() {
     newGem = new Gem();
     allGems.push(newGem);
@@ -218,6 +253,9 @@ Gem.generateGem = function() {
     setTimeout(Gem.generateGem, delay);
 }
 
+/*
+ * Static method deletes gems from the array after they have expired.
+ */ 
 Gem.expireGem = function(expriringGem){
     allGems.forEach(function(gem, index) {
         if(expriringGem == gem ){
@@ -226,7 +264,12 @@ Gem.expireGem = function(expriringGem){
     });
 }
 
-// Enemies our player must avoid
+/*
+ *  Enemies our player must avoid
+ *  Enemies have random y-values and speeds from an array of possible values.
+ *  As the player scores higher, the enemies move faster and more
+ * enemies appear at once. They also cover more of the screen.
+ */ 
 var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = 0;
@@ -247,12 +290,18 @@ var Enemy = function() {
     
 }
 
-// Update the enemy's position
-// Parameter: dt, a time delta between ticks. Ensures the game runs at the same speed for all computers.
+/*
+ *  Update the enemy's position
+ *  Parameter: dt, a time delta between ticks. Ensures the 
+ *  game runs at the same speed for all computers.
+ */ 
 Enemy.prototype.update = function(dt) {
     this.x += (this.speed) * dt;
-    
-    // Checks for collision between enemy and player. If any enemy touches with the player, the player is returned to the bottom of the screen.
+    /*
+    * Checks for collision between enemy and player. 
+    * If any enemy touches with the player, the player is 
+    * returned to the bottom of the screen.
+    */ 
     allEnemies.forEach(function(enemy, index) {
         if(Helper.overlap(enemy, player)){
             Helper.updateScore("died");
@@ -262,26 +311,35 @@ Enemy.prototype.update = function(dt) {
 
 }
 
-// Draw the enemy on the screen
+/*
+ *  Draw the enemy on the screen
+ */ 
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); 
 
 }
 
-// Static methods for instantiating enemy objects
+/*
+ * Static method for instantiating enemy objects by adding random numbers
+ * of enemy objects to the *allEnenies array and random times (from a range of values)
+ */ 
 Enemy.generateEnemies = function() {
     allEnemies.push(new Enemy());
     Enemy.removeOffScreenEnemies();
     var delay;
     if(score >= 200){
-        delay = Helper.returnRandomValue([0, 200, 500, 750]); //
+        delay = Helper.returnRandomValue([0, 200, 500, 750]); 
      } else {
-        delay = Helper.returnRandomValue([0, 500, 750, 1000]); //
+        delay = Helper.returnRandomValue([0, 500, 750, 1000]); 
      }
     setTimeout(Enemy.generateEnemies, delay);
 }
 
-// Method loops through allEnemies array and deletes any enemy in the array that has moved off the canavs. The canvas width is set at 505.
+
+/*
+ * Method loops through allEnemies array and deletes any enemy in the array 
+ * that has moved off the canavs. The canvas width is set at 505.
+ */ 
 Enemy.removeOffScreenEnemies = function() {
     allEnemies.forEach(function(enemy, index) {
         if(enemy.x > 505){
@@ -291,9 +349,10 @@ Enemy.removeOffScreenEnemies = function() {
 }
 
 
-// Player Class
+/*
+ * Constructor for Player object
+ */ 
 var Player = function(){
-    // TODO: allow user to select image 
     this.playerIcon = 'images/char-cat-girl.png';
     this.x = Helper.returnRandomValue([0, 100, 200, 300, 400]);
     this.y = 380;
@@ -301,28 +360,25 @@ var Player = function(){
     this.height = 101;
 }
 
-Player.prototype.update = function(dt) {
-
-}
-
+/*
+ * Draws Player on the screen
+ */ 
 Player.prototype.render = function() {
    ctx.drawImage(Resources.get(this.playerIcon), this.x, this.y);
 }
 
-
-
+/*
+ * Moves the player around the screen in response to user pressing keyboard arrows 
+ */ 
 Player.prototype.handleInput = function(keyCode) {
     if(keyCode === 'left'){
         if(this.x - 101 < 0){ 
-            this.x = 0;
-            
+            this.x = 0;  
         } else {
             this.x -= 100; // If it's on the grid, move left by 100
         }  
-    } else if(keyCode == 'up'){ // water ranges from y=0 to y=81
-
-        if(this.y - 85 < 0){ //prevents pressing up key at top of game from incrementing score
-            
+    } else if(keyCode == 'up'){ // water ranges from y=0 to y=85
+        if(this.y - 85 < 0){ //prevents pressing up key at top of game from incrementing score   
             Helper.updateScore("water");  
             this.y =  380;   
         }
@@ -349,13 +405,13 @@ Player.prototype.handleInput = function(keyCode) {
 Enemy.generateEnemies();
 player = new Player();
 
-
-// Randomly generate a gem
+// Randomly generate gems
 Gem.generateGem();
 
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method.
+/*
+ * This listens for key presses and sends the keys to the Player.handleInput() method.
+ */  
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
@@ -363,8 +419,6 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
