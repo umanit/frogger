@@ -2,7 +2,7 @@ body {
     text-align: center;
     margin: 0;
     font-family: "Visitor";
-	font-size: 4em;
+	
 }
 
 #container {
@@ -17,18 +17,149 @@ body {
 	vertical-align: middle;
 	background-color: #E1077F;
 	color: #ADFF17;
+	font-size: 4em;
 }
 
 #high-score {
 	display: none;
 	width: 200px;
-	border: 2px solid #E1077F;
 	position: absolute;
-	font-size: 0.75em;
-	background-color: #E1077F;
-	color: #ADFF17;
+	font-size: 2.75em;
+	background-color: #0AAEFF;
+	color: #E8FB2D;
+	border-bottom: 2px solid #09a0e6;
 
 }
+
+/*#tweet-score {
+	display: block;
+	width: 150px;
+	margin: auto;
+	padding: 3px 6px;
+	border-radius: 2px;
+	border-bottom: 3px solid #4a97ce;
+	background-color: #54acec;
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+}*/
+
+a.twitter-share-button {
+  display: block;
+  padding: 1px 3px 0 19px;
+  width: 100px;
+  margin: 10px auto;
+  border: #ccc solid 1px;
+  border-radius: 3px;
+  background: #f8f8f8 url(../images/Twitter_logo_blue.png) 2px 3px no-repeat;
+  background: url(../images/Twitter_logo_blue.png) 2px 3px no-repeat,
+              -webkit-linear-gradient(#fff, #dedede);
+  background: url(../images/Twitter_logo_blue.png) 2px 3px no-repeat,
+              linear-gradient(#fff, #dedede);
+  background-size: 16px 13px, auto auto;
+ 
+  /* Text */
+    font: bold 11px/17px Helvetica, Arial, sans-serif;
+  text-decoration: none;
+  color: #333;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+  white-space: nowrap;
+}
+ 
+/* Color Highlight for keyboard navigation */
+a.twitter-share-button:focus, {
+  outline: none;
+  border-color: #0089cb;
+}
+
+/*
+* Thanks to Daniel Perez Alvarez for this GitHub-style ribbon
+* Tutorial at http://unindented.org/articles/github-ribbon-using-css-transforms/
+*/
+.ribbon {
+  background-color: #0AAEFF;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  left: -50px;
+  top: 30px;
+  -webkit-transform: rotate(-45deg);
+     -moz-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+       -o-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  -webkit-box-shadow: 0 0 10px #888;
+     -moz-box-shadow: 0 0 10px #888;
+          box-shadow: 0 0 10px #888;
+}
+.ribbon a {
+  border: 1px solid #ADFF17;
+  color: #ADFF17;
+  display: block;
+  font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 1px 0;
+  padding: 10px 50px;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 0 5px #444;
+}
+
+/*
+* Thanks to KEENAN PAYNE for this css3/HTML5 only modal tutorial 
+* Tutorial at http://www.webdesignerdepot.com/2012/10/creating-a-modal-window-with-html5-and-css3/
+*/
+.modalDialog {
+	position: fixed;
+	font-family: "Visitor", Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+.modalDialog:target {
+	opacity:1;
+	pointer-events: auto;
+}
+
+.modalDialog > div {
+	width: 400px;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 5px;
+	background: #fff;
+	background: -moz-linear-gradient(#E8FB2D, #ADFF17);
+	background: -webkit-linear-gradient(#E8FB2D, #ADFF17);
+	background: -o-linear-gradient(#E8FB2D, #ADFF17);
+}
+.close {
+	background: #E1077F;
+	color: #E8FB2D;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.close:hover { background: #00d9ff; }
 
 @font-face {
       font-family: "Visitor";

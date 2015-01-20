@@ -32,6 +32,10 @@ var audio = new Audio;
  * Helper methods 
  */
 
+window.onload = function() {
+    window.location.href = "#openModal";
+}
+
 var Helper = function(){}
 // Function returns a random value. It takes an array of possible values as a parameter.
 Helper.returnRandomValue = function(possibleValues){
@@ -124,8 +128,9 @@ Helper.showHighScore = function(){
     div.style.right = (((w - 505)/2) - 200 )/2 + "px";
     div.style.top = (h - 200)/2 + "px";
     div.style.display = "block";
-    div.innerHTML = "Highest Score! " + highestScore;
-
+    var URL = encodeURIComponent("http://localhost:8888/Hipster-Quiz2.0/");
+    var text = encodeURIComponent("I scored " + highestScore + " on Frogger!")
+    div.innerHTML = "High Score: " + highestScore + '<a class="twitter-share-button" id="tweet-score" target="_blank" href="https://twitter.com/share?url='+ URL +'&text='+ text +'">Tweet Your Score</a>';
 }   
 
 // Updates score. Takes in a string of which event has occured as a parameter.
