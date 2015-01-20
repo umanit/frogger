@@ -61,9 +61,6 @@ Helper.sameBlock = function(fig1, player){
     var fig1Col = Helper.getCol(fig1);
     var playerRow = Helper.getRow(player);
     var playerCol = Helper.getCol(player);
-
-    console.log(playerRow);
-    console.log(playerCol);
     if(fig1Row == playerRow && fig1Col == playerCol){
         return true;
     }
@@ -101,7 +98,6 @@ Helper.getRow = function(element){
  * element (object) as parameter and returns int, col number. 
  */
 Helper.getCol = function(element) {
-    console.log("x = " + element.x);
     var col;
     if(element.x < 100){
         col = 0;
@@ -159,7 +155,7 @@ Helper.updateScore = function(event){
     if(possibleGems.indexOf(event) > -1){ // if the event string is found in the array of possible gems
         score += Helper.getGemScore(event);
         div.innerHTML = "Gem! Score: " + score;
-        audio.src = 'smw_power-up.wav';
+        audio.src = 'sounds/smw_power-up.wav';
         audio.play();
     }
     if(event == "died") {
@@ -172,13 +168,13 @@ Helper.updateScore = function(event){
 
         div.style.backgroundColor = "#E1077F";
         div.style.color = "#ADFF17";
-        audio.src = 'Meh.m4a';
+        audio.src = 'sounds/Meh.m4a';
         audio.play();
     }
     if(event == "water"){
         score += 10;
         div.innerHTML = "Yay! Score: " + score;
-        audio.src = 'smw_swimming.wav';
+        audio.src = 'sounds/smw_swimming.wav';
         audio.play();
     }
     if(score >= 100){
@@ -190,7 +186,7 @@ Helper.updateScore = function(event){
     if(score == 100 || score == 200){
         div.innerHTML = "*New Level!!!* " + score
         ;
-        audio.src = 'smw_1-up.wav';
+        audio.src = 'sounds/smw_1-up.wav';
         audio.play();
     }
     if(score >= 200){
@@ -246,7 +242,7 @@ Gem.prototype.update = function() {
 Gem.generateGem = function() {
     newGem = new Gem();
     allGems.push(newGem);
-    audio.src = 'smw_power-up_appears.wav';
+    audio.src = 'sounds/smw_power-up_appears.wav';
     audio.play();
     var delay = Helper.returnRandomValue([10000, 30000, 60000, 100000]); //
     setTimeout(function() { Gem.expireGem(newGem); }, 10000);
