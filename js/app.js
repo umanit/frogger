@@ -1,18 +1,18 @@
 /*
- * Globals 
+ * Globals
  */
 
 var allEnemies = []; // stores all enemy objects
 var player;
 var gem;
-var allGems = []; // stores all gem objects 
+var allGems = []; // stores all gem objects
 var possibleGems = ['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png'];
 var highestScore = 0;
 var newHighScore; // true when a new high score is reached.
 var score = 0;
 var div = document.getElementById('score-board');
 var audio = new Audio;
-
+var level = 1;
 
 /*
  * Opens the instructions modal on page load. Modal itself uses only css3/html5
@@ -22,7 +22,7 @@ window.onload = function() {
 }
 
 /*
- * Helper methods 
+ * Helper methods
  */
 
 /*
@@ -33,7 +33,7 @@ var Helper = function(){}
 
 /*
  * Function returns a random value. It takes an array of possible values as a parameter.
- */ 
+ */
 Helper.returnRandomValue = function(possibleValues){
     var randomStartingPosition = Math.floor(Math.random() * possibleValues.length);
     return possibleValues[randomStartingPosition];
@@ -51,11 +51,11 @@ Helper.overlap = function(fig1, player){
 }
 
 /*
- * Function takes two game elements and returns 
- * true if they are in the same block. Used for gem collisions, 
- * since an exact overlap is not required. The player 
+ * Function takes two game elements and returns
+ * true if they are in the same block. Used for gem collisions,
+ * since an exact overlap is not required. The player
  * just needs to be on the same block as the gem.
- */ 
+ */
 Helper.sameBlock = function(fig1, player){
     var fig1Row = Helper.getRow(fig1);
     var fig1Col = Helper.getCol(fig1);
@@ -67,9 +67,9 @@ Helper.sameBlock = function(fig1, player){
 }
 
 /*
-* Function calculates row number of element. Takes in 
-* element (object) as parameter and returns an int, row number. 
-*/ 
+* Function calculates row number of element. Takes in
+* element (object) as parameter and returns an int, row number.
+*/
 Helper.getRow = function(element){
     var row;
     if((element.y + element.height/2) <= 85){
@@ -94,8 +94,8 @@ Helper.getRow = function(element){
 }
 
 /*
- * Function calculates column number of element. Takes in 
- * element (object) as parameter and returns int, col number. 
+ * Function calculates column number of element. Takes in
+ * element (object) as parameter and returns int, col number.
  */
 Helper.getCol = function(element) {
     var col;
@@ -104,7 +104,7 @@ Helper.getCol = function(element) {
     }
     if(element.x >= 100 && element.x < 200){
         col = 1;
-    } 
+    }
     if(element.x >= 200 && element.x < 300){
         col = 2;
     }
@@ -118,8 +118,8 @@ Helper.getCol = function(element) {
 }
 
 /*
- * Helper function returns an int, the number of points each gem is worth. 
- * It takes a string which is the path for that gem's image and maps images to scores on a 
+ * Helper function returns an int, the number of points each gem is worth.
+ * It takes a string which is the path for that gem's image and maps images to scores on a
  * gemScores object.
  */
 Helper.getGemScore = function(gemImageString){
@@ -144,10 +144,10 @@ Helper.showHighScore = function(){
     var URL = encodeURIComponent("http://www.katielouw.com/sites/Frogger");
     var text = encodeURIComponent("I scored " + highestScore + " on Frogger!")
     div.innerHTML = "High Score: " + highestScore + '<a class="twitter-share-button" id="tweet-score" target="_blank" href="https://twitter.com/share?url='+ URL +'&text='+ text +'">Tweet Your Score</a>';
-}   
+}
 
 /*
- * Function updates score. Takes in a string of which event has 
+ * Function updates score. Takes in a string of which event has
  * occured as a parameter. In the case of gems, the event is that path for that
  * gem's image. The gemScores object (above) maps images to scores.
  */
@@ -172,6 +172,7 @@ Helper.updateScore = function(event){
         audio.play();
     }
     if(event == "water"){
+        level += 1;
         score += 10;
         div.innerHTML = "Yay! Score: " + score;
         audio.src = 'sounds/smw_swimming.wav';
@@ -193,15 +194,15 @@ Helper.updateScore = function(event){
         div.innerHTML = "OMG! Score: " + score;
         div.style.backgroundColor = "#E8FB2D";
         div.style.color = "#0AAEFF";
-    } 
+    }
     if(score > highestScore){
         highestScore = score;
         newHighScore = true;
-    }   
+    }
 }
 
 /*
- * Constructor creates a gem object. 
+ * Constructor creates a gem object.
  * Takes in an array (global variable) of the possible gem types it can generate.
  */
 var Gem = function() {
@@ -209,11 +210,11 @@ var Gem = function() {
     this.x = Helper.returnRandomValue([126, 227, 328]);
     this.y = Helper.returnRandomValue([115, 200, 275]);
     this.width = 50;
-    this.height = 85;   
+    this.height = 85;
 }
 
 /*
- * Draws gem on the screen 
+ * Draws gem on the screen
  */
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.gemImage), this.x, this.y);
@@ -222,7 +223,7 @@ Gem.prototype.render = function() {
 
 /*
  * Checks if the player has collided with a gem. When this happens, the score
- * is updated by the gem's value and the gem expires. 
+ * is updated by the gem's value and the gem expires.
  */
 Gem.prototype.update = function() {
     allGems.forEach(function(gem, index) {
@@ -235,7 +236,7 @@ Gem.prototype.update = function() {
 
 
 /*
- * A static methosdto generate gems at random time values 
+ * A static methosdto generate gems at random time values
  * (from an array of possibilities). Gems are stored in an array for a small amount of time,
  * and then they expire.
  */
@@ -251,7 +252,7 @@ Gem.generateGem = function() {
 
 /*
  * Static method deletes gems from the array after they have expired.
- */ 
+ */
 Gem.expireGem = function(expriringGem){
     allGems.forEach(function(gem, index) {
         if(expriringGem == gem ){
@@ -265,12 +266,12 @@ Gem.expireGem = function(expriringGem){
  *  Enemies have random y-values and speeds from an array of possible values.
  *  As the player scores higher, the enemies move faster and more
  * enemies appear at once. They also cover more of the screen.
- */ 
+ */
 var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = 0;
     if(score >= 100){
-        this.y = Helper.returnRandomValue([60, 145, 230, 315]); // the y-axis coordinates of the paved tracks enemies can run on 
+        this.y = Helper.returnRandomValue([60, 145, 230, 315]); // the y-axis coordinates of the paved tracks enemies can run on
     } else {
         this.y = Helper.returnRandomValue([60, 145, 230]);
     }
@@ -283,21 +284,21 @@ var Enemy = function() {
     }
     this.yoffset = 50;
     this.xoffset = 100;
-    
+
 }
 
 /*
  *  Update the enemy's position
- *  Parameter: dt, a time delta between ticks. Ensures the 
+ *  Parameter: dt, a time delta between ticks. Ensures the
  *  game runs at the same speed for all computers.
- */ 
+ */
 Enemy.prototype.update = function(dt) {
     this.x += (this.speed) * dt;
     /*
-    * Checks for collision between enemy and player. 
-    * If any enemy touches with the player, the player is 
+    * Checks for collision between enemy and player.
+    * If any enemy touches with the player, the player is
     * returned to the bottom of the screen.
-    */ 
+    */
     allEnemies.forEach(function(enemy, index) {
         if(Helper.overlap(enemy, player)){
             Helper.updateScore("died");
@@ -309,33 +310,33 @@ Enemy.prototype.update = function(dt) {
 
 /*
  *  Draw the enemy on the screen
- */ 
+ */
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y); 
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
 }
 
 /*
  * Static method for instantiating enemy objects by adding random numbers
  * of enemy objects to the *allEnenies array and random times (from a range of values)
- */ 
+ */
 Enemy.generateEnemies = function() {
     allEnemies.push(new Enemy());
     Enemy.removeOffScreenEnemies();
     var delay;
     if(score >= 200){
-        delay = Helper.returnRandomValue([0, 200, 500, 750]); 
+        delay = Helper.returnRandomValue([0, 200, 500, 750]);
      } else {
-        delay = Helper.returnRandomValue([0, 500, 750, 1000]); 
+        delay = Helper.returnRandomValue([0, 500, 750, 1000]);
      }
     setTimeout(Enemy.generateEnemies, delay);
 }
 
 
 /*
- * Method loops through allEnemies array and deletes any enemy in the array 
+ * Method loops through allEnemies array and deletes any enemy in the array
  * that has moved off the canavs. The canvas width is set at 505.
- */ 
+ */
 Enemy.removeOffScreenEnemies = function() {
     allEnemies.forEach(function(enemy, index) {
         if(enemy.x > 505){
@@ -347,53 +348,53 @@ Enemy.removeOffScreenEnemies = function() {
 
 /*
  * Constructor for Player object
- */ 
+ */
 var Player = function(){
     this.playerIcon = 'images/char-cat-girl.png';
     this.x = Helper.returnRandomValue([0, 100, 200, 300, 400]);
-    this.y = 380;
+    this.y = 480;
     this.width = 171;
     this.height = 101;
 }
 
 /*
  * Draws Player on the screen
- */ 
+ */
 Player.prototype.render = function() {
    ctx.drawImage(Resources.get(this.playerIcon), this.x, this.y);
 }
 
 /*
- * Moves the player around the screen in response to user pressing keyboard arrows 
- */ 
+ * Moves the player around the screen in response to user pressing keyboard arrows
+ */
 Player.prototype.handleInput = function(keyCode) {
     if(keyCode === 'left'){
-        if(this.x - 101 < 0){ 
-            this.x = 0;  
+        if(this.x - 101 < 0){
+            this.x = 0;
         } else {
             this.x -= 100; // If it's on the grid, move left by 100
-        }  
+        }
     } else if(keyCode == 'up'){ // water ranges from y=0 to y=85
-        if(this.y - 85 < 0){ //prevents pressing up key at top of game from incrementing score   
-            Helper.updateScore("water");  
-            this.y =  380;   
+        if(this.y - 85 < 0){ //prevents pressing up key at top of game from incrementing score
+            Helper.updateScore("water");
+            this.y =  480;
         }
          else {
-            this.y -= 85; 
-        } 
-    } else if(keyCode == 'right'){ 
+            this.y -= 85;
+        }
+    } else if(keyCode == 'right'){
          if(this.x + 101 > 400){  //Player's maximum rightward position
-                this.x = 400; 
+                this.x = 400;
             } else {
-                this.x += 100; 
+                this.x += 100;
             }
-        } else if(keyCode == 'down') { 
-            if(this.y + 85 > 380) {  //Players maximum distance from the top of the canvas
-                this.y = 380; 
+        } else if(keyCode == 'down') {
+            if(this.y + 85 > 480) {  //Players maximum distance from the top of the canvas
+                this.y = 480;
             } else {
-                this.y += 85; 
-            } 
-        
+                this.y += 85;
+            }
+
     }
 }
 
@@ -407,7 +408,7 @@ Gem.generateGem();
 
 /*
  * This listens for key presses and sends the keys to the Player.handleInput() method.
- */  
+ */
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
@@ -417,6 +418,3 @@ document.addEventListener('keyup', function(e) {
     };
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
-
-

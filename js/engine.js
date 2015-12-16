@@ -22,11 +22,11 @@ var Engine = (function(global) {
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
-        ctx = canvas.getContext('2d'),        
+        ctx = canvas.getContext('2d'),
         lastTime;
 
     canvas.width = 505;
-    canvas.height = 586;
+    canvas.height = 686;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -46,7 +46,7 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
         update(dt);
-        render();
+        render(1);
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -104,22 +104,22 @@ var Engine = (function(global) {
      * game tick (or loop of the game engine) because that's how games work -
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
+     *
+     * @param {Int} level Level to show
      */
     function render() {
+        console.log(level);
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            numRows = 6,
+        var rowImages = [];
+        var numRows = 7,
             numCols = 5,
             row, col;
+
+        for (var i=0; i < numRows; i++) {
+            rowImages.push('images/level' + level + '/row' + i + '.png');
+        }
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
@@ -173,9 +173,27 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
+        'images/level1/row0.png',
+        'images/level1/row1.png',
+        'images/level1/row2.png',
+        'images/level1/row3.png',
+        'images/level1/row4.png',
+        'images/level1/row5.png',
+        'images/level1/row6.png',
+        'images/level2/row0.png',
+        'images/level2/row1.png',
+        'images/level2/row2.png',
+        'images/level2/row3.png',
+        'images/level2/row4.png',
+        'images/level2/row5.png',
+        'images/level2/row6.png',
+        'images/level3/row0.png',
+        'images/level3/row1.png',
+        'images/level3/row2.png',
+        'images/level3/row3.png',
+        'images/level3/row4.png',
+        'images/level3/row5.png',
+        'images/level3/row6.png',
         'images/enemy-bug.png',
         'images/char-cat-girl.png',
         'images/Gem-Blue.png',
