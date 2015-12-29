@@ -46,7 +46,7 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
         update(dt);
-        render(1);
+        render();
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -108,7 +108,6 @@ var Engine = (function(global) {
      * @param {Int} level Level to show
      */
     function render() {
-        console.log(level);
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -194,8 +193,18 @@ var Engine = (function(global) {
         'images/level3/row4.png',
         'images/level3/row5.png',
         'images/level3/row6.png',
-        'images/train.png',
-        'images/char-cat-girl.png',
+        'images/train-left.png',
+        'images/train-right.png',
+        'images/bicycle-irma.png',
+        'images/avatar/acwel.png',
+        'images/car-left-blue.png',
+        'images/car-left-green.png',
+        'images/car-left-orange.png',
+        'images/car-left-pink.png',
+        'images/car-right-blue.png',
+        'images/car-right-green.png',
+        'images/car-right-orange.png',
+        'images/car-right-pink.png'
     ]);
     Resources.onReady(init);
 

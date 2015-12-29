@@ -13,6 +13,204 @@ var score = 0;
 var div = document.getElementById('score-board');
 var audio = new Audio;
 var level = 1;
+var enemyCollection = [
+    [
+        {
+            sprite: 'images/bicycle-irma.png',
+            x: -100,
+            y: [325],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-blue.png',
+            x: -100,
+            y: [415],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-pink.png',
+            x: -100,
+            y: [415],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-green.png',
+            x: -100,
+            y: [415],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-orange.png',
+            x: -100,
+            y: [415],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-left-blue.png',
+            x: 500,
+            y: [90],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        },
+        {
+            sprite: 'images/car-left-orange.png',
+            x: 500,
+            y: [90],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        },
+        {
+            sprite: 'images/car-left-pink.png',
+            x: 500,
+            y: [90],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        },
+        {
+            sprite: 'images/car-left-green.png',
+            x: 500,
+            y: [90],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        }
+    ],
+    [
+        {
+            sprite: 'images/car-right-blue.png',
+            x: -100,
+            y: [415, 330],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-pink.png',
+            x: -100,
+            y: [415, 330],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-green.png',
+            x: -100,
+            y: [415, 330],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-right-orange.png',
+            x: -100,
+            y: [415, 330],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/car-left-blue.png',
+            x: 500,
+            y: [90, 175],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        },
+        {
+            sprite: 'images/car-left-orange.png',
+            x: 500,
+            y: [90, 175],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        },
+        {
+            sprite: 'images/car-left-pink.png',
+            x: 500,
+            y: [90, 175],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        },
+        {
+            sprite: 'images/car-left-green.png',
+            x: 500,
+            y: [90, 175],
+            width: 100,
+            height: 70,
+            xoffset: 0,
+            yoffset: 50,
+            orientation: 'left'
+        }
+    ],
+    [
+        {
+            sprite: 'images/train-right.png',
+            x: -300,
+            y: [50, 390],
+            width: 300,
+            height: 70,
+            xoffset: 0,
+            yoffset: 31,
+            orientation: 'right'
+        },
+        {
+            sprite: 'images/train-left.png',
+            x: 700,
+            y: [135, 305],
+            width: 300,
+            height: 70,
+            xoffset: 0,
+            yoffset: 31,
+            orientation: 'left'
+        }
+    ]
+];
 
 /*
  * Opens the instructions modal on page load. Modal itself uses only css3/html5
@@ -47,7 +245,7 @@ Helper.overlap = function(fig1, player){
     return !( player.x + fig1.xoffset > (fig1.x + fig1.width)  ||  // player is to the right of figure 1
             (player.x + player.width - fig1.xoffset) < fig1.x    ||  // player is to the left of fig 1
             player.y + (player.height - fig1.yoffset) < (fig1.y) ||  //player is above fig1
-            player.y  > (fig1.y + (fig1.height - fig1.yoffset)))   //player is below fig1
+            player.y  > (fig1.y + fig1.height - fig1.yoffset))   //player is below fig1
 }
 
 /*
@@ -87,8 +285,10 @@ Helper.getRow = function(element){
     if((element.y + element.height/2) > 340 && (element.y + element.height/2) <= 425){
         row = 4;
     }
-    if((element.y + element.height/2) > 425){
+    if((element.y + element.height/2) > 425 && (element.y + element.height/2) <= 515){
         row = 5;
+    } else {
+        row = 6;
     }
     return row;
 }
@@ -118,20 +318,6 @@ Helper.getCol = function(element) {
 }
 
 /*
- * Helper function returns an int, the number of points each gem is worth.
- * It takes a string which is the path for that gem's image and maps images to scores on a
- * gemScores object.
- */
-Helper.getGemScore = function(gemImageString){
-    var gemScores = {
-        "images/Gem-Green.png": 20,
-        "images/Gem-Blue.png": 30,
-        "images/Gem-Orange.png": 50
-        }
-    return gemScores[gemImageString];
-}
-
-/*
  * Helper function displays a scoreboard with the player;s highest score so far.
  */
 Helper.showHighScore = function(){
@@ -152,12 +338,6 @@ Helper.showHighScore = function(){
  * gem's image. The gemScores object (above) maps images to scores.
  */
 Helper.updateScore = function(event){
-    if(possibleGems.indexOf(event) > -1){ // if the event string is found in the array of possible gems
-        score += Helper.getGemScore(event);
-        div.innerHTML = "Gem! Score: " + score;
-        audio.src = 'sounds/smw_power-up.wav';
-        audio.play();
-    }
     if(event == "died") {
         if(newHighScore){
             Helper.showHighScore();
@@ -171,8 +351,7 @@ Helper.updateScore = function(event){
     }
     if(event == "top"){
         level += 1;
-        score += 10;
-        div.innerHTML = "Yay! Score: " + score;
+        allEnemies = [];
     }
     if (score > highestScore){
         highestScore = score;
@@ -187,16 +366,17 @@ Helper.updateScore = function(event){
  * enemies appear at once. They also cover more of the screen.
  */
 var Enemy = function() {
-    this.sprite = 'images/train.png';
-    this.x = -300;
-    this.y = Helper.returnRandomValue([50, 135, 300, 390]);
-    this.width = 300;
-    this.height = 100;
-    this.speed = Helper.returnRandomValue([200, 250, 280, 300, 320, 350, 400]);//
+    var enemy = Helper.returnRandomValue(enemyCollection[level-1]);
 
-    this.yoffset = 10;
-    this.xoffset = 10;
-
+    this.sprite = enemy.sprite;
+    this.x = enemy.x;
+    this.y = Helper.returnRandomValue(enemy.y);
+    this.width = enemy.width;
+    this.height = enemy.height;
+    this.speed = Helper.returnRandomValue([200, 250, 280, 300, 320, 350, 400]);
+    this.orientation = enemy.orientation;
+    this.yoffset = enemy.yoffset;
+    this.xoffset = enemy.xoffset;
 }
 
 /*
@@ -205,7 +385,12 @@ var Enemy = function() {
  *  game runs at the same speed for all computers.
  */
 Enemy.prototype.update = function(dt) {
-    this.x += (this.speed) * dt;
+    if (this.orientation == 'right') {
+        this.x += (this.speed) * dt;
+    } else {
+        this.x -= (this.speed) * dt;
+    }
+
     /*
     * Checks for collision between enemy and player.
     * If any enemy touches with the player, the player is
@@ -213,8 +398,11 @@ Enemy.prototype.update = function(dt) {
     */
     allEnemies.forEach(function(enemy, index) {
         if(Helper.overlap(enemy, player)){
+            console.log(enemy, player);
+            console.log(player.y);
+            console.log((enemy.y + enemy.height - enemy.yoffset))
             Helper.updateScore("died");
-            player.y = 380;
+            player.y = 480;
         }
     });
 
@@ -235,12 +423,7 @@ Enemy.prototype.render = function() {
 Enemy.generateEnemies = function() {
     allEnemies.push(new Enemy());
     Enemy.removeOffScreenEnemies();
-    var delay;
-    if(score >= 200){
-        delay = Helper.returnRandomValue([0, 200, 500, 750]);
-     } else {
-        delay = Helper.returnRandomValue([0, 500, 750, 1000]);
-     }
+    var delay = Helper.returnRandomValue([0, 500, 750, 1000]);
     setTimeout(Enemy.generateEnemies, delay);
 }
 
@@ -262,11 +445,11 @@ Enemy.removeOffScreenEnemies = function() {
  * Constructor for Player object
  */
 var Player = function(){
-    this.playerIcon = 'images/char-cat-girl.png';
-    this.x = Helper.returnRandomValue([0, 100, 200, 300, 400]);
-    this.y = 430;
-    this.width = 171;
-    this.height = 101;
+    this.playerIcon = 'images/avatar/acwel.png';
+    this.x = 0;
+    this.y = 480;
+    this.width = 100;
+    this.height = 85;
 }
 
 /*
@@ -300,13 +483,12 @@ Player.prototype.handleInput = function(keyCode) {
             } else {
                 this.x += 100;
             }
-        } else if(keyCode == 'down') {
-            if(this.y + 85 > 480) {  //Players maximum distance from the top of the canvas
-                this.y = 430;
-            } else {
-                this.y += 85;
-            }
-
+    } else if(keyCode == 'down') {
+        if(this.y + 85 > 480) {  //Players maximum distance from the top of the canvas
+            this.y = 480;
+        } else {
+            this.y += 85;
+        }
     }
 }
 
