@@ -9,10 +9,10 @@ var allGems = []; // stores all gem objects
 var possibleGems = ['images/Gem-Green.png', 'images/Gem-Blue.png', 'images/Gem-Orange.png'];
 var highestScore = 0;
 var newHighScore; // true when a new high score is reached.
-var score = 0;
 var div = document.getElementById('score-board');
 var audio = new Audio;
 var level = 1;
+var score = 0;
 var enemyCollection = [
     [
         {
@@ -318,36 +318,13 @@ Helper.getCol = function(element) {
 }
 
 /*
- * Helper function displays a scoreboard with the player;s highest score so far.
- */
-Helper.showHighScore = function(){
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    var div = document.getElementById('high-score');
-    div.style.right = (((w - 500)/2) - 200 )/2 + "px";
-    div.style.top = (h - 200)/2 + "px";
-    div.style.display = "block";
-    var URL = encodeURIComponent("http://www.katielouw.com/sites/Frogger");
-    var text = encodeURIComponent("I scored " + highestScore + " on Frogger!")
-    div.innerHTML = "High Score: " + highestScore + '<a class="twitter-share-button" id="tweet-score" target="_blank" href="https://twitter.com/share?url='+ URL +'&text='+ text +'">Tweet Your Score</a>';
-}
-
-/*
  * Function updates score. Takes in a string of which event has
  * occured as a parameter. In the case of gems, the event is that path for that
  * gem's image. The gemScores object (above) maps images to scores.
  */
 Helper.updateScore = function(event){
     if(event == "died") {
-        if(newHighScore){
-            Helper.showHighScore();
-        }
-        newHighScore = false;
-        score = 0;
-        div.innerHTML = "You Died! Score: " + score;
-
-        div.style.backgroundColor = "#E1077F";
-        div.style.color = "#ADFF17";
+        score += 10;
     }
     if(event == "top"){
         level += 1;
@@ -357,6 +334,8 @@ Helper.updateScore = function(event){
         highestScore = score;
         newHighScore = true;
     }
+
+    div.innerHTML = score;
 }
 
 /*
@@ -463,6 +442,7 @@ Player.prototype.render = function() {
  * Moves the player around the screen in response to user pressing keyboard arrows
  */
 Player.prototype.handleInput = function(keyCode) {
+    score += 1;
     if(keyCode === 'left'){
         if(this.x - 100 < 0){
             this.x = 0;
@@ -489,7 +469,11 @@ Player.prototype.handleInput = function(keyCode) {
         } else {
             this.y += 85;
         }
+    } else {
+        score -= 1;
     }
+
+    div.innerHTML = score;
 }
 
 // Instantiate Objects
