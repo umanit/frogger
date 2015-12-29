@@ -187,18 +187,15 @@ Helper.updateScore = function(event){
  * enemies appear at once. They also cover more of the screen.
  */
 var Enemy = function() {
-    this.sprite = 'images/enemy-bug.png';
-    this.x = 0;
-    this.y = Helper.returnRandomValue([10, 85, 265, 350]);
-    this.width = 171;
-    this.height = 101;
-    if(score >= 200){
-        this.speed = Helper.returnRandomValue([250, 300, 350, 400, 500]); //
-    } else {
-        this.speed = Helper.returnRandomValue([200, 250, 280, 300, 320, 350, 400]);//
-    }
-    this.yoffset = 50;
-    this.xoffset = 100;
+    this.sprite = 'images/train.png';
+    this.x = -300;
+    this.y = Helper.returnRandomValue([50, 135, 300, 390]);
+    this.width = 300;
+    this.height = 100;
+    this.speed = Helper.returnRandomValue([200, 250, 280, 300, 320, 350, 400]);//
+
+    this.yoffset = 10;
+    this.xoffset = 10;
 
 }
 
