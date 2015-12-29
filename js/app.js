@@ -18,7 +18,7 @@ var level = 1;
  * Opens the instructions modal on page load. Modal itself uses only css3/html5
  */
 window.onload = function() {
-    window.location.href = "#openModal";
+    //window.location.href = "#openModal";
 }
 
 /*
@@ -138,7 +138,7 @@ Helper.showHighScore = function(){
     var w = window.innerWidth;
     var h = window.innerHeight;
     var div = document.getElementById('high-score');
-    div.style.right = (((w - 505)/2) - 200 )/2 + "px";
+    div.style.right = (((w - 500)/2) - 200 )/2 + "px";
     div.style.top = (h - 200)/2 + "px";
     div.style.display = "block";
     var URL = encodeURIComponent("http://www.katielouw.com/sites/Frogger");
@@ -168,97 +168,16 @@ Helper.updateScore = function(event){
 
         div.style.backgroundColor = "#E1077F";
         div.style.color = "#ADFF17";
-        audio.src = 'sounds/Meh.m4a';
-        audio.play();
     }
-    if(event == "water"){
+    if(event == "top"){
         level += 1;
         score += 10;
         div.innerHTML = "Yay! Score: " + score;
-        audio.src = 'sounds/smw_swimming.wav';
-        audio.play();
     }
-    if(score >= 100){
-        div.innerHTML = "Wow! Score: " + score;
-        div.style.backgroundColor = "#FDB93A";
-        div.style.color = "#E1077F";
-
-    }
-    if(score == 100 || score == 200){
-        div.innerHTML = "*New Level!!!* " + score
-        ;
-        audio.src = 'sounds/smw_1-up.wav';
-        audio.play();
-    }
-    if(score >= 200){
-        div.innerHTML = "OMG! Score: " + score;
-        div.style.backgroundColor = "#E8FB2D";
-        div.style.color = "#0AAEFF";
-    }
-    if(score > highestScore){
+    if (score > highestScore){
         highestScore = score;
         newHighScore = true;
     }
-}
-
-/*
- * Constructor creates a gem object.
- * Takes in an array (global variable) of the possible gem types it can generate.
- */
-var Gem = function() {
-    this.gemImage = Helper.returnRandomValue(possibleGems);
-    this.x = Helper.returnRandomValue([126, 227, 328]);
-    this.y = Helper.returnRandomValue([115, 200, 275]);
-    this.width = 50;
-    this.height = 85;
-}
-
-/*
- * Draws gem on the screen
- */
-Gem.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.gemImage), this.x, this.y);
-
-}
-
-/*
- * Checks if the player has collided with a gem. When this happens, the score
- * is updated by the gem's value and the gem expires.
- */
-Gem.prototype.update = function() {
-    allGems.forEach(function(gem, index) {
-        if(Helper.sameBlock(gem, player)){
-            Helper.updateScore(gem.gemImage);
-            Gem.expireGem(gem);
-        }
-    });
-}
-
-
-/*
- * A static methosdto generate gems at random time values
- * (from an array of possibilities). Gems are stored in an array for a small amount of time,
- * and then they expire.
- */
-Gem.generateGem = function() {
-    newGem = new Gem();
-    allGems.push(newGem);
-    audio.src = 'sounds/smw_power-up_appears.wav';
-    audio.play();
-    var delay = Helper.returnRandomValue([10000, 30000, 60000, 100000]); //
-    setTimeout(function() { Gem.expireGem(newGem); }, 10000);
-    setTimeout(Gem.generateGem, delay);
-}
-
-/*
- * Static method deletes gems from the array after they have expired.
- */
-Gem.expireGem = function(expriringGem){
-    allGems.forEach(function(gem, index) {
-        if(expriringGem == gem ){
-            allGems.splice(index, 1);
-        }
-    });
 }
 
 /*
@@ -270,11 +189,7 @@ Gem.expireGem = function(expriringGem){
 var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = 0;
-    if(score >= 100){
-        this.y = Helper.returnRandomValue([60, 145, 230, 315]); // the y-axis coordinates of the paved tracks enemies can run on
-    } else {
-        this.y = Helper.returnRandomValue([60, 145, 230]);
-    }
+    this.y = Helper.returnRandomValue([10, 85, 265, 350]);
     this.width = 171;
     this.height = 101;
     if(score >= 200){
@@ -339,7 +254,7 @@ Enemy.generateEnemies = function() {
  */
 Enemy.removeOffScreenEnemies = function() {
     allEnemies.forEach(function(enemy, index) {
-        if(enemy.x > 505){
+        if(enemy.x > 500){
             allEnemies.splice(index, 1);
         }
     });
@@ -352,7 +267,7 @@ Enemy.removeOffScreenEnemies = function() {
 var Player = function(){
     this.playerIcon = 'images/char-cat-girl.png';
     this.x = Helper.returnRandomValue([0, 100, 200, 300, 400]);
-    this.y = 480;
+    this.y = 430;
     this.width = 171;
     this.height = 101;
 }
@@ -369,28 +284,28 @@ Player.prototype.render = function() {
  */
 Player.prototype.handleInput = function(keyCode) {
     if(keyCode === 'left'){
-        if(this.x - 101 < 0){
+        if(this.x - 100 < 0){
             this.x = 0;
         } else {
             this.x -= 100; // If it's on the grid, move left by 100
         }
-    } else if(keyCode == 'up'){ // water ranges from y=0 to y=85
+    } else if(keyCode == 'up'){ // top ranges from y=0 to y=85
         if(this.y - 85 < 0){ //prevents pressing up key at top of game from incrementing score
-            Helper.updateScore("water");
+            Helper.updateScore("top");
             this.y =  480;
         }
          else {
             this.y -= 85;
         }
     } else if(keyCode == 'right'){
-         if(this.x + 101 > 400){  //Player's maximum rightward position
+         if(this.x + 100 > 400){  //Player's maximum rightward position
                 this.x = 400;
             } else {
                 this.x += 100;
             }
         } else if(keyCode == 'down') {
             if(this.y + 85 > 480) {  //Players maximum distance from the top of the canvas
-                this.y = 480;
+                this.y = 430;
             } else {
                 this.y += 85;
             }
@@ -401,9 +316,6 @@ Player.prototype.handleInput = function(keyCode) {
 // Instantiate Objects
 Enemy.generateEnemies();
 player = new Player();
-
-// Randomly generate gems
-Gem.generateGem();
 
 
 /*

@@ -2,18 +2,18 @@ body {
     text-align: center;
     margin: 0;
     font-family: "Visitor";
-	
+
 }
 
 #container {
-	display: table; 
+	display: table;
 	height: 100px;
-	width: 100%; 
+	width: 100%;
 	overflow: hidden;
 }
 
 #score-board {
-	display: table-cell; 
+	display: table-cell;
 	vertical-align: middle;
 	background-color: #E1077F;
 	color: #ADFF17;
@@ -58,7 +58,7 @@ a.twitter-share-button {
   background: url(../images/Twitter_logo_blue.png) 2px 3px no-repeat,
               linear-gradient(#fff, #dedede);
   background-size: 16px 13px, auto auto;
- 
+
   /* Text */
     font: bold 11px/17px Helvetica, Arial, sans-serif;
   text-decoration: none;
@@ -66,7 +66,7 @@ a.twitter-share-button {
   text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
   white-space: nowrap;
 }
- 
+
 /* Color Highlight for keyboard navigation */
 a.twitter-share-button:focus, {
   outline: none;
@@ -106,7 +106,7 @@ a.twitter-share-button:focus, {
 }
 
 /*
-* Thanks to KEENAN PAYNE for this css3/HTML5 only modal tutorial 
+* Thanks to KEENAN PAYNE for this css3/HTML5 only modal tutorial
 * Tutorial at http://www.webdesignerdepot.com/2012/10/creating-a-modal-window-with-html5-and-css3/
 */
 .modalDialog {
