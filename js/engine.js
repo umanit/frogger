@@ -14,6 +14,36 @@
  * a little simpler to work with.
  */
 
+var bonusImages = [
+    [
+        {
+            row: 0,
+            col: 2,
+            image: 'row0-3.png'
+        },
+        {
+            row: 0,
+            col: 3,
+            image: 'row0-4.png'
+        },
+        {
+            row: 0,
+            col: 4,
+            image: 'row0-6.png'
+        }
+    ],
+    [
+        {
+            row: 0,
+            col: 4,
+            image: 'row0-6.png'
+        }
+    ],
+    [
+        
+    ]
+]
+
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -133,8 +163,12 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 100, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * 100, row * 85);
             }
+        }
+
+        for (var i = 0; i < bonusImages[level-1].length; i++) {
+            ctx.drawImage(Resources.get('images/level' + level +'/' + bonusImages[level-1][i].image), bonusImages[level-1][i].col * 100, bonusImages[level-1][i].row * 85);
         }
 
 
@@ -179,6 +213,9 @@ var Engine = (function(global) {
         'images/level1/row4.png',
         'images/level1/row5.png',
         'images/level1/row6.png',
+        'images/level1/row0-3.png',
+        'images/level1/row0-4.png',
+        'images/level1/row0-6.png',
         'images/level2/row0.png',
         'images/level2/row1.png',
         'images/level2/row2.png',
@@ -186,6 +223,7 @@ var Engine = (function(global) {
         'images/level2/row4.png',
         'images/level2/row5.png',
         'images/level2/row6.png',
+        'images/level2/row0-6.png',
         'images/level3/row0.png',
         'images/level3/row1.png',
         'images/level3/row2.png',

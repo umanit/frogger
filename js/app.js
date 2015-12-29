@@ -190,6 +190,16 @@ var enemyCollection = [
     ],
     [
         {
+            sprite: 'images/train-left.png',
+            x: 500,
+            y: [135, 305],
+            width: 300,
+            height: 70,
+            xoffset: 0,
+            yoffset: 31,
+            orientation: 'left'
+        },
+        {
             sprite: 'images/train-right.png',
             x: -300,
             y: [50, 390],
@@ -198,16 +208,6 @@ var enemyCollection = [
             xoffset: 0,
             yoffset: 31,
             orientation: 'right'
-        },
-        {
-            sprite: 'images/train-left.png',
-            x: 700,
-            y: [135, 305],
-            width: 300,
-            height: 70,
-            xoffset: 0,
-            yoffset: 31,
-            orientation: 'left'
         }
     ]
 ];
